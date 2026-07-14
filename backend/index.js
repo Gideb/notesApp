@@ -53,7 +53,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.json({ data: "hello", database: mongoose.connection.readyState === 1 });
+  res.json({ data: "hello" });
 });
 
 //create accounut
@@ -142,6 +142,27 @@ app.post("/login", async (req, res) => {
   }
 });
 
+//get user
+app.get("/get-user", authenticateToken, async (req, res) => {
+  const { user } = req.user;
+
+  const isUser = await userModel.findOne({ id: user._Id });
+
+  if (!isUser) {
+    return res.sendStatus(401);
+  }
+
+  return res.json({
+    user: {
+      fullName: isUser.fullName,
+      email: isUser.email,
+      _id: isUser._id,
+      createdOn: isUser.CreatedOn,
+    },
+    message: "",
+  });
+});
+
 //add notes
 app.post("/add-note", authenticateToken, async (req, res) => {
   const { title, content, tags } = req.body;
@@ -205,7 +226,7 @@ app.put("/edit-notes/:noteId", authenticateToken, async (req, res) => {
     return res.json({
       error: false,
       note,
-      message: "Note editted successfully",
+      message: "Note updated successfully",
     });
   } catch (error) {
     return res
@@ -225,6 +246,58 @@ app.get("/get-all-notes", authenticateToken, async (req, res) => {
       error: false,
       notes,
       message: "All notes retrieved successfully",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal Server Error" });
+  }
+});
+
+//delete notes
+app.delete("/delete-note/:noteId", authenticateToken, async (req, res) => {
+  const noteId = req.params.noteId;
+  const { user } = req.user;
+
+  try {
+    const note = await Note.findOne({ _id: noteId, userId: user._id });
+
+    if (!note) {
+      return res.status(400).josn({ error: true, message: "Note not found!" });
+    }
+
+    await note.deleteOne({ _id: noteId, userId: user._id });
+
+    return res.json({ error: false, message: "Note deleted successfully!" });
+  } catch (error) {
+    return res.status(400).json({
+      error: true,
+      message: "Internal Server Error!",
+    });
+  }
+});
+
+//Update isPinned value
+app.put("/update-pinned-note/:noteId", authenticateToken, async (req, res) => {
+  const { noteId } = req.params.noteId;
+  const { isPinned } = req.body;
+  const { user } = req.user;
+
+  try {
+    const note = await Note.findOne({ _id: noteId, userId: user._id });
+
+    if (!note) {
+      return res.status(400).json({ error: true, message: "Note not found" });
+    }
+
+    note.isPinned = isPinned;
+
+    await note.save();
+
+    return res.json({
+      error: false,
+      note,
+      message: "Note pinned successfully",
     });
   } catch (error) {
     return res
