@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const config = require("./config.json");
 const mongoose = require("mongoose");
 
 const userModel = require("./models/user_model");
@@ -11,8 +10,7 @@ const cors = require("cors");
 const app = express();
 
 const jwt = require("jsonwebtoken");
-const { authentication } = require("./utils/utils");
-const user_model = require("./models/user_model");
+const { authenticateToken } = require("./utils/utils");
 
 const PORT = process.env.PORT || 8000;
 
@@ -55,7 +53,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.json({ data: "hello" });
+  res.json({ data: "hello", database: mongoose.connection.readyState === 1 });
 });
 
 //create accounut
