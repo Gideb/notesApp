@@ -167,7 +167,7 @@ app.post("/add-note", authenticateToken, async (req, res) => {
     await note.save();
 
     return res
-      .status(400)
+      .status(200)
       .json({ error: false, message: "Note added successfully", note });
   } catch (error) {
     return res

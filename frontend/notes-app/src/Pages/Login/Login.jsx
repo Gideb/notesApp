@@ -1,12 +1,15 @@
 import { Link } from "react-router-dom";
 import PasswordInput from "../../Components/Input/PasswordInput";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
+import { API_PATHS } from "../../utils/apiPaths";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,9 +24,26 @@ const Login = () => {
       return;
     }
 
-    setError(null); //clear any previous error messages
+    setError(null);
 
-    //login api call logic here
+    try {
+      const response = await fetch(API_PATHS.LOGIN, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || data.error || !data.accessToken) {
+        setError(data.message || "Unable to log in. Please try again.");
+        return;
+      }
+
+      localStorage.setItem("accessToken", data.accessToken);
+      navigate("/dashboard");
+    } catch {
+      setError("Unable to reach the server. Please try again.");
+    }
   };
 
   return (

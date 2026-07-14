@@ -2,13 +2,16 @@ import { Link } from "react-router-dom";
 
 import PasswordInput from "../../Components/Input/PasswordInput";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
+import { API_PATHS } from "../../utils/apiPaths";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -28,9 +31,26 @@ const Signup = () => {
       return;
     }
 
-    setError(null); //clear any previous error messages
+    setError(null);
 
-    //signup api call logic here
+    try {
+      const response = await fetch(API_PATHS.CREATE_ACCOUNT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, email, password }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || data.error || !data.accessToken) {
+        setError(data.message || "Unable to create your account.");
+        return;
+      }
+
+      localStorage.setItem("accessToken", data.accessToken);
+      navigate("/dashboard");
+    } catch {
+      setError("Unable to reach the server. Please try again.");
+    }
   };
 
   return (

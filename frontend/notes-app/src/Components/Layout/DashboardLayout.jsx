@@ -1,5 +1,5 @@
-import React from 'react'
-import Navbar from '../Layout/Navbar'
+import React from "react";
+import Navbar from "./Navbar";
 
 const DashboardLayout = () => {
   return (
@@ -7,7 +7,7 @@ const DashboardLayout = () => {
       <Navbar />
       <div>DashboardLayout</div>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardLayout
+export default DashboardLayout;
