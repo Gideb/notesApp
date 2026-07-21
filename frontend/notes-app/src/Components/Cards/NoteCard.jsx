@@ -28,7 +28,11 @@ const NoteCard = ({
           </div>
 
           <AiOutlinePushpin
-            className={`icon-btn ${isPinned ? "text-primary" : "text-slate-300"}`}
+            className={`cursor-pointer transition-colors duration-300 ${
+              isPinned
+                ? "text-amber-500"
+                : "text-slate-300 hover:text-amber-500"
+            }`}
             onClick={(e) => {
               e.stopPropagation();
               onPinNote();
