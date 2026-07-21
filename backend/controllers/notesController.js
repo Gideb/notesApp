@@ -133,6 +133,7 @@ const updatePinnedNote = async (req, res, next) => {
       note,
       message: "Note pin status updated successfully.",
     });
+    
   } catch (error) {
     return next(error);
   }

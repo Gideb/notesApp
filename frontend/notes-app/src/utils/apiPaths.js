@@ -5,9 +5,10 @@ export const API_PATHS = {
   LOGIN: `${API_BASE_URL}/login`,
   GET_USER_INFO: `${API_BASE_URL}/get-user`,
   ADD_NOTE: `${API_BASE_URL}/add-note`,
-  EDIT_NOTE: (id) => `${API_BASE_URL}/edit-notes/${id}`,
-  DELETE_NOTE: (id) => `${API_BASE_URL}/delete-note/${id}`,
-  UPDATE_PINNED_NOTE: (id) => `${API_BASE_URL}/update-pinned-note/${id}`,
+  EDIT_NOTE: (noteId) => `${API_BASE_URL}/edit-notes/${noteId}`,
+  DELETE_NOTE: (noteId) => `${API_BASE_URL}/delete-note/${noteId}`,
+  UPDATE_PINNED_NOTE: (noteId) =>
+    `${API_BASE_URL}/update-pinned-note/${noteId}`,
   GET_ALL_NOTES: `${API_BASE_URL}/get-all-notes`,
 };
 
