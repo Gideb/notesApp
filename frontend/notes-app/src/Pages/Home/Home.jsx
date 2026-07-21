@@ -5,6 +5,7 @@ import AddEditNotes from "../../Components/Home/AddEditNotes";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import { API_PATHS } from "../../utils/apiPaths";
+import DeleteConfirm from "../../Components/Modals/DeleteConfirm";
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -15,6 +16,15 @@ const Home = () => {
   const [notes, setNotes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [openViewModal, setOpenViewModal] = useState({
+    isShown: false,
+    data: null,
+  });
+  const [deleteModal, setDeleteModal] = useState({
+    isShown: false,
+    note: null,
+  });
+
   const navigate = useNavigate();
 
   const request = async (path, options = {}) => {
@@ -34,12 +44,16 @@ const Home = () => {
     return data;
   };
 
+  //show notes on homescreen
   const getNotes = async () => {
     try {
       const data = await request(API_PATHS.GET_ALL_NOTES);
       setNotes(data.notes || []);
     } catch (error) {
-      if (error.message.toLowerCase().includes("token") || !localStorage.getItem("accessToken")) {
+      if (
+        error.message.toLowerCase().includes("token") ||
+        !localStorage.getItem("accessToken")
+      ) {
         localStorage.removeItem("accessToken");
         navigate("/login");
         return;
@@ -62,15 +76,19 @@ const Home = () => {
     });
   };
 
+  //note delete button
   const handleDeleteNote = async (noteId) => {
     try {
       await request(API_PATHS.DELETE_NOTE(noteId), { method: "DELETE" });
-      setNotes((currentNotes) => currentNotes.filter((note) => note._id !== noteId));
+      setNotes((currentNotes) =>
+        currentNotes.filter((note) => note._id !== noteId)
+      );
     } catch (error) {
       setError(error.message || "Unable to delete the note.");
     }
   };
 
+  //note pin button
   const handlePinNote = async (note) => {
     try {
       const data = await request(API_PATHS.UPDATE_PINNED_NOTE(note._id), {
@@ -79,8 +97,13 @@ const Home = () => {
       });
       setNotes((currentNotes) =>
         currentNotes
-          .map((currentNote) => (currentNote._id === note._id ? data.note : currentNote))
-          .sort((firstNote, secondNote) => Number(secondNote.isPinned) - Number(firstNote.isPinned))
+          .map((currentNote) =>
+            currentNote._id === note._id ? data.note : currentNote
+          )
+          .sort(
+            (firstNote, secondNote) =>
+              Number(secondNote.isPinned) - Number(firstNote.isPinned)
+          )
       );
     } catch (error) {
       setError(error.message || "Unable to update the note.");
@@ -95,7 +118,9 @@ const Home = () => {
         {isLoading ? (
           <p className="mt-8 text-sm text-slate-500">Loading notes...</p>
         ) : notes.length === 0 ? (
-          <p className="mt-8 text-sm text-slate-500">No notes yet. Create your first one.</p>
+          <p className="mt-8 text-sm text-slate-500">
+            No notes yet. Create your first one.
+          </p>
         ) : (
           <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3">
             {notes.map((note) => (
@@ -106,15 +131,31 @@ const Home = () => {
                 content={note.content}
                 tags={note.tags.map((tag) => `#${tag}`).join(" ")}
                 isPinned={note.isPinned}
-                onEdit={() => setOpenAddEditModal({ isShown: true, type: "edit", data: note })}
-                onDelete={() => handleDeleteNote(note._id)}
+                onTapped={() =>
+                  setOpenViewModal({
+                    isShown: true,
+                    data: note,
+                  })
+                }
+                onEdit={() =>
+                  setOpenAddEditModal({
+                    isShown: true,
+                    type: "edit",
+                    data: note,
+                  })
+                }
+                onDelete={() =>
+                  setDeleteModal({
+                    isShown: true,
+                    note,
+                  })
+                }
                 onPinNote={() => handlePinNote(note)}
               />
             ))}
           </div>
         )}
       </div>
-
       <button
         className="w-15 h-15 flex items-center justify-center bg-primary text-white rounded-full absolute bottom-10 right-10 hover:bg-pink-800 focus:outline-none cursor-pointer"
         onClick={() =>
@@ -123,7 +164,6 @@ const Home = () => {
       >
         <MdAdd size={20} className="text-white " />
       </button>
-
       <Modal
         isOpen={openAddEditModal.isShown}
         onRequestClose={() =>
@@ -131,12 +171,58 @@ const Home = () => {
         }
         style={{ overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" } }}
         contentLabel="Add/Edit Note"
-        className="bg-white dark:bg-[#0c0c0e] rounded-lg p-6 w-full max-w-md max-h-3/4 mx-auto mt-20 "
+        className=" bg-white dark:bg-[#0c0c0e] rounded-lg p-6 w-full max-w-md max-h-[85vh] overflow-y-auto outline-none"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        }}
       >
         <AddEditNotes
           type={openAddEditModal.type}
           noteData={openAddEditModal.data}
           onClose={onCloseAddNote}
+          onSuccess={(updatedNote) => {
+            setNotes((currentNotes) => {
+              if (openAddEditModal.type === "edit") {
+                return currentNotes.map((note) =>
+                  note._id === updatedNote._id ? updatedNote : note
+                );
+              }
+              return [updatedNote, ...currentNotes];
+            });
+          }}
+        />
+      </Modal>
+
+      {/*  delete modal */}
+      <Modal
+        isOpen={deleteModal.isShown}
+        onRequestClose={() => setDeleteModal({ isShown: false, note: null })}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        }}
+        className="bg-white dark:bg-[#0c0c0e] rounded-lg p-6 w-full max-w-sm outline-none"
+      >
+        <DeleteConfirm
+          note={deleteModal.note}
+          onCancel={() => setDeleteModal({ isShown: false, note: null })}
+          onConfirm={async () => {
+            await handleDeleteNote(deleteModal.note._id);
+
+            setDeleteModal({
+              isShown: false,
+              note: null,
+            });
+          }}
         />
       </Modal>
     </>

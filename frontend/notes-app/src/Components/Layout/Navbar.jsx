@@ -21,9 +21,7 @@ const Navbar = () => {
 
   return (
     <div className="flex items-center  bg-white dark:bg-[#000000] justify-between px-6 py-3 drop-shadow-md  dark:border-b dark:border-white/30 ">
-      <h2 className="text-xl font-medium text-black dark:text-white py-3">
-        vault
-      </h2>
+      <h2 className="text-xl font-medium text-primary  py-3">vault</h2>
 
       <SearchBar
         value={searchQuery}

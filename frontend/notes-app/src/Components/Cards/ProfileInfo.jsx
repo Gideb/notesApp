@@ -54,7 +54,7 @@ const ProfileInfo = ({ onLogout }) => {
       <button
         type="button"
         onClick={toggleMenu}
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-sm font-medium text-slate-950 transition hover:scale-105 dark:bg-slate-800 dark:text-white"
+        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary bg-slate-100 text-sm font-medium text-slate-950 transition hover:scale-105 dark:bg-slate-800 dark:text-white"
       >
         {getInitials("Papa Smith")}
       </button>

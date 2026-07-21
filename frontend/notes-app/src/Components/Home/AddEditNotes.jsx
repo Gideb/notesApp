@@ -1,18 +1,74 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import TagInput from "../Input/TagInput";
+import { API_PATHS } from "../../utils/apiPaths";
 
-const AddEditNotes = ({ noteData, type, onClose }) => {
+const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
   const [error, setError] = useState(null);
 
-  //add new note
-  const addNewNote = async () => {};
+  useEffect(() => {
+    if (type === "edit" && noteData) {
+      setTitle(noteData.title || "");
+      setContent(noteData.content || "");
+      setTags(Array.isArray(noteData.tags) ? noteData.tags : []);
+    } else {
+      setTitle("");
+      setContent("");
+      setTags([]);
+    }
+    setError(null);
+  }, [type, noteData]);
 
-  //edit note
-  const editNote = async () => {};
+  const request = async (path, options = {}) => {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await fetch(path, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        ...options.headers,
+      },
+    });
+    const data = await response.json();
+    if (!response.ok || data.error) {
+      throw new Error(data.message || "Unable to complete the request.");
+    }
+    return data;
+  };
+
+  const addNewNote = async () => {
+    try {
+      const data = await request(API_PATHS.ADD_NOTE, {
+        method: "POST",
+        body: JSON.stringify({ title, content, tags }),
+      });
+      onSuccess?.(data.note);
+      onClose();
+    } catch (error) {
+      setError(error.message || "Unable to add the note.");
+    }
+  };
+
+  const editNote = async () => {
+    if (!noteData || !noteData._id) {
+      setError("Unable to update this note.");
+      return;
+    }
+
+    try {
+      const data = await request(API_PATHS.EDIT_NOTE(noteData._id), {
+        method: "PUT",
+        body: JSON.stringify({ title, content, tags }),
+      });
+      onSuccess?.(data.note);
+      onClose();
+    } catch (error) {
+      setError(error.message || "Unable to update the note.");
+    }
+  };
 
   const handleAddNote = () => {
     if (!title) {
@@ -25,7 +81,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
       return;
     }
 
-    setError("");
+    setError("Note not saved. Please try again.");
 
     if (type === "edit") {
       editNote();
@@ -48,7 +104,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
 
         <input
           type="text"
-          className="text-slate-950 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/70 outline-none text-xl p-2 rounded"
+          className="text-slate-950 dark:text-slate-300 bg-slate-300/50 dark:bg-slate-800/70 outline-none text-xl p-2 rounded placeholder:text-sm "
           placeholder="Note Title"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
@@ -59,7 +115,7 @@ const AddEditNotes = ({ noteData, type, onClose }) => {
         <label className="input-label">CONTENT</label>
         <textarea
           placeholder="Note Content"
-          className="text-slate-950 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/70 outline-none text-sm h-40 resize-none p-2 rounded"
+          className="text-slate-950 dark:text-slate-300 bg-slate-300/50 dark:bg-slate-800/70 outline-none text-sm h-40 resize-none p-2 rounded"
           rows={10}
           value={content}
           onChange={({ target }) => setContent(target.value)}
