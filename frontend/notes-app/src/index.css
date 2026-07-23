@@ -6,8 +6,8 @@
 @theme {
   --font-display: "Poppins", "sans-serif";
 
-  --color-primary: #db2777;
-  --color-dark: #0f172a;
+  --color-primary: #0b132b;
+  --color-dark: #f8f8f8;
 }
 
 @layer base {

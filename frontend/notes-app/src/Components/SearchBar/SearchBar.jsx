@@ -27,14 +27,14 @@ const SearchBar = ({ onChange, onClearSearch, value, handleSearch }) => {
 
   return (
     <>
-      <div className="hidden w-80 sm:flex items-center rounded-md bg-slate-100 px-4 dark:bg-[#161114]">
+      <div className="hidden w-80 sm:flex items-center rounded-md bg-slate-100 px-4 dark:bg-dark/20">
         <input
           type="text"
           placeholder="Search Notes..."
           value={value}
           onChange={onChange}
           onKeyDown={handleKeyDown}
-          className="w-full bg-transparent py-[11px] text-xs outline-none dark:text-white"
+          className="w-full bg-transparent py-2.75 text-xs outline-none dark:text-white"
         />
 
         {hasSearchValue && (

@@ -1,11 +1,14 @@
-import React from "react";
+import { BsFillTrash3Fill } from "react-icons/bs";
 
 const DeleteConfirm = ({ note, onCancel, onConfirm }) => {
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-3 dark:text-white">
-        Delete Note
-      </h2>
+      <div className="flex gap-1 items-center mb-4">
+        <h2 className="text-xl font-semibold mb-3 dark:text-white">
+          Delete Note
+        </h2>
+        <BsFillTrash3Fill className="text-red-500 mb-3" />
+      </div>
 
       <p className="text-slate-600 dark:text-slate-300">
         Are you sure you want to delete
@@ -17,14 +20,14 @@ const DeleteConfirm = ({ note, onCancel, onConfirm }) => {
       <div className="flex justify-end gap-3 mt-6">
         <button
           onClick={onCancel}
-          className="px-4 py-2 rounded bg-slate-200 dark:bg-slate-700"
+          className="px-4 py-2 rounded bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 cursor-pointer"
         >
           Cancel
         </button>
 
         <button
           onClick={onConfirm}
-          className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+          className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 cursor-pointer "
         >
           Delete
         </button>

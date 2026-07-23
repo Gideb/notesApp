@@ -16,7 +16,7 @@ const NoteCard = ({
 }) => {
   return (
     <div onClick={onTapped} className="cursor-pointer">
-      <div className="bg-white dark:bg-[#0c0 c0e] border border-amber-700 shadow-md p-4 space-y-3 dark:border-white rounded hover:shadow-xl dark:shadow-gray-600/20 hover:-translate-y-1 transition-all ease-in-out duration-500">
+      <div className="bg-[#1C2541]  dark:bg-[#0c0c0e] border border-amber-700 shadow-md p-4 space-y-3 dark:border-white rounded hover:shadow-xl dark:shadow-gray-600/20 hover:-translate-y-1 transition-all ease-in-out duration-500">
         <div className="flex items-center justify-between mb-2">
           <div>
             <h6 className="text-sm font-medium text-black dark:text-white">
@@ -29,9 +29,7 @@ const NoteCard = ({
 
           <AiOutlinePushpin
             className={`cursor-pointer transition-colors duration-300 ${
-              isPinned
-                ? "text-amber-500"
-                : "text-slate-300 hover:text-amber-500"
+              isPinned ? "text-pink-700" : "text-slate-300 hover:text-pink-500"
             }`}
             onClick={(e) => {
               e.stopPropagation();

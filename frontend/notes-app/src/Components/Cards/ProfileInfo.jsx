@@ -54,7 +54,7 @@ const ProfileInfo = ({ onLogout }) => {
       <button
         type="button"
         onClick={toggleMenu}
-        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary bg-slate-100 text-sm font-medium text-slate-950 transition hover:scale-105 dark:bg-slate-800 dark:text-white"
+        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary dark:border-dark bg-slate-100 text-sm font-medium text-slate-950 transition hover:scale-105 dark:bg-slate-800 dark:text-white"
       >
         {getInitials("Papa Smith")}
       </button>
@@ -62,7 +62,7 @@ const ProfileInfo = ({ onLogout }) => {
       <div
         onMouseEnter={clearCloseTimer}
         onMouseLeave={scheduleClose}
-        className={`absolute right-0 top-full z-50 mt-2 w-48 rounded border border-slate-200 bg-white p-3 shadow-lg transition-all duration-300 ease-out dark:border-gray-700 dark:bg-[#0f0d0e] ${
+        className={`absolute right-0 top-full z-50 mt-2 w-48 rounded border-2 border-gray-200 bg-white p-3 shadow-lg transition-all duration-300 ease-out dark:border-gray-700 dark:bg-[#0f0d0e] ${
           isOpen
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-2 opacity-0"
