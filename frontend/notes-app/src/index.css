@@ -7,7 +7,7 @@
   --font-display: "Poppins", "sans-serif";
 
   --color-primary: #0b132b;
-  --color-dark: #f8f8f8;
+  --color-dark: #f8fafc;
 }
 
 @layer base {
@@ -16,7 +16,7 @@
   }
 
   body {
-    @apply bg-[#f8f8f8] dark:bg-[#030303f5] overflow-x-hidden;
+    @apply bg-[#f8f8f8] dark:bg-[#070514] overflow-x-hidden;
   }
 }
 

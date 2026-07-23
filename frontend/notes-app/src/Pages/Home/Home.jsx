@@ -157,13 +157,15 @@ const Home = () => {
         )}
       </div>
       <button
-        className="w-15 h-15 flex items-center justify-center bg-primary text-white rounded-full absolute bottom-10 right-10 hover:bg-pink-800 focus:outline-none cursor-pointer"
+        className="w-17 h-17 flex items-center justify-center bg-primary dark:bg-dark  rounded-full absolute bottom-10 right-10 hover:bg-primary/90 dark:hover:bg-dark/90 focus:outline-none cursor-pointer"
         onClick={() =>
           setOpenAddEditModal({ isShown: true, type: "add", data: null })
         }
       >
-        <MdAdd size={20} className="text-white " />
+        <MdAdd size={20} className="text-white dark:text-primary font-bold" />
       </button>
+
+      {/* add or edit note */}
       <Modal
         isOpen={openAddEditModal.isShown}
         onRequestClose={() =>
