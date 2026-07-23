@@ -158,7 +158,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto p-3 sm:px-4 sm:py-6 lg:px-6">
         {error && <p className="mt-8 text-sm text-red-500">{error}</p>}
 
         {isLoading ? (
