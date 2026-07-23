@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import NoteCard from "../../Components/Cards/NoteCard";
-import { MdAdd } from "react-icons/md";
+import { AiOutlinePushpin } from "react-icons/ai";
+import { GoTrash } from "react-icons/go";
+import { MdAdd, MdClose, MdOutlineCreate } from "react-icons/md";
 import AddEditNotes from "../../Components/Home/AddEditNotes";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +29,23 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+  const sortNotes = (notesList) => {
+    return [...notesList].sort((firstNote, secondNote) => {
+      if (Number(secondNote.isPinned) !== Number(firstNote.isPinned)) {
+        return Number(secondNote.isPinned) - Number(firstNote.isPinned);
+      }
+
+      const firstTime = new Date(
+        firstNote.createdOn || firstNote.updatedOn || 0
+      ).getTime();
+      const secondTime = new Date(
+        secondNote.createdOn || secondNote.updatedOn || 0
+      ).getTime();
+
+      return secondTime - firstTime;
+    });
+  };
+
   const request = async (path, options = {}) => {
     const accessToken = localStorage.getItem("accessToken");
     const response = await fetch(path, {
@@ -48,7 +67,7 @@ const Home = () => {
   const getNotes = async () => {
     try {
       const data = await request(API_PATHS.GET_ALL_NOTES);
-      setNotes(data.notes || []);
+      setNotes(sortNotes(data.notes || []));
     } catch (error) {
       if (
         error.message.toLowerCase().includes("token") ||
@@ -76,6 +95,30 @@ const Home = () => {
     });
   };
 
+  const closeViewModal = () => {
+    setOpenViewModal({
+      isShown: false,
+      data: null,
+    });
+  };
+
+  const openEditModal = (note) => {
+    setOpenAddEditModal({
+      isShown: true,
+      type: "edit",
+      data: note,
+    });
+    closeViewModal();
+  };
+
+  const openDeleteModal = (note) => {
+    closeViewModal();
+    setDeleteModal({
+      isShown: true,
+      note,
+    });
+  };
+
   //note delete button
   const handleDeleteNote = async (noteId) => {
     try {
@@ -96,15 +139,18 @@ const Home = () => {
         body: JSON.stringify({ isPinned: !note.isPinned }),
       });
       setNotes((currentNotes) =>
-        currentNotes
-          .map((currentNote) =>
+        sortNotes(
+          currentNotes.map((currentNote) =>
             currentNote._id === note._id ? data.note : currentNote
           )
-          .sort(
-            (firstNote, secondNote) =>
-              Number(secondNote.isPinned) - Number(firstNote.isPinned)
-          )
+        )
       );
+      if (openViewModal.data?._id === note._id) {
+        setOpenViewModal((currentModal) => ({
+          ...currentModal,
+          data: data.note,
+        }));
+      }
     } catch (error) {
       setError(error.message || "Unable to update the note.");
     }
@@ -190,14 +236,101 @@ const Home = () => {
           onSuccess={(updatedNote) => {
             setNotes((currentNotes) => {
               if (openAddEditModal.type === "edit") {
-                return currentNotes.map((note) =>
-                  note._id === updatedNote._id ? updatedNote : note
+                return sortNotes(
+                  currentNotes.map((note) =>
+                    note._id === updatedNote._id ? updatedNote : note
+                  )
                 );
               }
-              return [updatedNote, ...currentNotes];
+              return sortNotes([updatedNote, ...currentNotes]);
             });
           }}
         />
+      </Modal>
+
+      {/*  view note modal */}
+      <Modal
+        isOpen={openViewModal.isShown}
+        onRequestClose={closeViewModal}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        }}
+        className="w-full max-w-2xl rounded-2xl bg-white p-0 outline-none shadow-2xl dark:bg-[#121214]"
+      >
+        {openViewModal.data && (
+          <div className="overflow-hidden rounded-2xl">
+            <div className="border-b border-slate-200 bg-slate-50 px-5 py-4 dark:border-slate-800 dark:bg-slate-900/80">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                    {openViewModal.data.title}
+                  </h3>
+                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    {new Date(
+                      openViewModal.data.createdOn
+                    ).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <button
+                  className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-200 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+                  onClick={closeViewModal}
+                  aria-label="Close note"
+                >
+                  <MdClose size={18} />
+                </button>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  className={`flex items-center gap-2 rounded-full px-3 py-2 text-sm transition ${
+                    openViewModal.data.isPinned
+                      ? "bg-sky-600 text-white"
+                      : "bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  }`}
+                  onClick={() => handlePinNote(openViewModal.data)}
+                >
+                  <AiOutlinePushpin size={16} />
+                  {openViewModal.data.isPinned ? "Pinned" : "Pin"}
+                </button>
+
+                <button
+                  className="flex items-center gap-2 rounded-full bg-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                  onClick={() => openEditModal(openViewModal.data)}
+                >
+                  <MdOutlineCreate size={16} />
+                  Edit
+                </button>
+
+                <button
+                  className="flex items-center gap-2 rounded-full bg-rose-600 px-3 py-2 text-sm text-white transition hover:bg-rose-700"
+                  onClick={() => openDeleteModal(openViewModal.data)}
+                >
+                  <GoTrash size={16} />
+                  Delete
+                </button>
+              </div>
+            </div>
+
+            <div className="max-h-[65vh] overflow-y-auto bg-white p-5 dark:bg-[#121214]">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-7 whitespace-pre-wrap text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+                {openViewModal.data.content}
+              </div>
+
+              {openViewModal.data.tags?.length > 0 && (
+                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+                  <span className="font-medium">Tags:</span>{" "}
+                  {openViewModal.data.tags.join(", ")}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </Modal>
 
       {/*  delete modal */}
@@ -212,7 +345,7 @@ const Home = () => {
             alignItems: "center",
           },
         }}
-        className="bg-white dark:bg-[#0c0c0e] rounded-lg p-6 w-full max-w-sm outline-none"
+        className="bg-white dark:bg-[#121214] rounded-lg p-6 w-full max-w-sm outline-none"
       >
         <DeleteConfirm
           note={deleteModal.note}

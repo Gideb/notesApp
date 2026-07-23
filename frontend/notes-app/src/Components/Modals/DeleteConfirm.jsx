@@ -4,11 +4,12 @@ const DeleteConfirm = ({ note, onCancel, onConfirm }) => {
   return (
     <div className="p-4">
       <div className="flex gap-1 items-center mb-4">
-        <h2 className="text-xl font-semibold mb-3 dark:text-white">
+        <h2 className="text-xl font-semibold mb-3 dark:text-sky-400 text-sky-700">
           Delete Note
         </h2>
-        <BsFillTrash3Fill className="text-red-500 mb-3" />
+        <BsFillTrash3Fill className="text-sky-700 dark:text-sky-500 text-lg mb-3" />
       </div>
+      <div className="border-t border-slate-400 dark:border-slate-600 -mt-4 mb-5" />
 
       <p className="text-slate-600 dark:text-slate-300">
         Are you sure you want to delete
@@ -17,6 +18,7 @@ const DeleteConfirm = ({ note, onCancel, onConfirm }) => {
 
       <p className="text-sm text-red-500 mt-2">This action cannot be undone.</p>
 
+      
       <div className="flex justify-end gap-3 mt-6">
         <button
           onClick={onCancel}

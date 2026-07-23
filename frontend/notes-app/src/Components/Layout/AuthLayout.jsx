@@ -1,4 +1,5 @@
 import React from "react";
+import { GiNotebook } from "react-icons/gi";
 import { Outlet } from "react-router-dom";
 
 const AuthLayout = () => {
@@ -6,6 +7,12 @@ const AuthLayout = () => {
     <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-3 py-6 sm:px-4 sm:py-8 lg:px-6 select-none">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Top Right Blob */}
+        <div className="flex items-center gap-2 py-3 absolute left-5 top-15   sm:left-16 sm:top-20 z-1000">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-primary dark:text-dark">
+            NOTEBOOK
+          </h2>
+          <GiNotebook className="text-primary dark:text-dark text-3xl sm:text-4xl" />
+        </div>
         <div
           className="absolute -right-12 -top-12 h-48 w-48 bg-[#FF3366] sm:-right-16 sm:-top-20 sm:h-96 sm:w-96 md:h-130 md:w-130"
           style={{ borderRadius: "42% 58% 70% 30% / 45% 45% 55% 55%" }}
