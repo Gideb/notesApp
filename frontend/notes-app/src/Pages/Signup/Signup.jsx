@@ -55,10 +55,10 @@ const Signup = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center mt-38 ">
-        <div className="w-130 border rounded bg-[#0B112C] px-15 py-20 text-white  ">
-          <form onSubmit={handleSignup} className="w-90 mx-auto">
-            <h2 className="text-2xl text-center mb-10">SignUp</h2>
+      <div className="flex items-center justify-center px-2 py-4 sm:px-4">
+        <div className="w-full max-w-104 rounded border border-white/80 bg-[#0B112C] px-5 py-8 text-white shadow-lg sm:max-w-120 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+          <form onSubmit={handleSignup} className="mx-auto w-full max-w-88">
+            <h2 className="mb-8 text-center text-2xl sm:mb-10">SignUp</h2>
 
             <input
               type="text"

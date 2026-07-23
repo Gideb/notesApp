@@ -5,7 +5,7 @@ const DashboardLayout = () => {
   return (
     <div>
       <Navbar />
-      <div>DashboardLayout</div>
+      <div></div>
     </div>
   );
 };

@@ -9,7 +9,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -48,10 +48,10 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-38">
-      <div className="w-130 shadow-lg dark:border-white dark:border rounded bg-[#0B112C] px-15 py-20 text-white ">
-        <form onSubmit={handleLogin} className="w-90 mx-auto">
-          <h2 className="text-2xl text-center mb-10">Login</h2>
+    <div className="flex items-center justify-center px-2 py-4 sm:px-4">
+      <div className="w-full max-w-[26rem] rounded border border-white/80 bg-[#0B112C] px-5 py-8 text-white shadow-lg sm:max-w-[30rem] sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+        <form onSubmit={handleLogin} className="mx-auto w-full max-w-[22rem]">
+          <h2 className="mb-8 text-center text-2xl sm:mb-10">Login</h2>
 
           <input
             type="text"
