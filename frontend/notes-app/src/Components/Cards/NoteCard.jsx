@@ -29,8 +29,10 @@ const NoteCard = ({
             </div>
 
             <AiOutlinePushpin
-              className={`cursor-pointer transition-colors duration-300 ${
-                isPinned ? "text-sky-500" : "text-slate-300 hover:text-sky-500"
+              className={`text-2xl cursor-pointer rounded-full p-1 transition-all duration-300 ${
+                isPinned
+                  ? "bg-sky-500/15 text-sky-400"
+                  : "text-slate-300 hover:bg-sky-500/10 hover:text-sky-400"
               }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -57,14 +59,14 @@ const NoteCard = ({
 
           <div className="flex items-center gap-2">
             <MdOutlineCreate
-              className="cursor-pointer text-lg text-dark/50 hover:text-sky-400 sm:text-dark/50"
+              className="cursor-pointer rounded-full p-1 text-2xl text-dark/50 transition hover:bg-slate-700/40 hover:text-sky-400 sm:text-dark/50"
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit();
               }}
             />
             <GoTrash
-              className="cursor-pointer text-lg text-dark/50 hover:text-sky-400 sm:text-dark/50"
+              className="cursor-pointer rounded-full p-1 text-2xl text-dark/50 transition hover:bg-rose-500/15 hover:text-rose-400 sm:text-dark/50"
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete();
