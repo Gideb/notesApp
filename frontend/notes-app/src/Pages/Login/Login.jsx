@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
 import { API_PATHS } from "../../utils/apiPaths";
+import axiosInstance from "../../utils/axiosInstance";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -28,22 +29,26 @@ const Login = () => {
     setError(null);
 
     try {
-      const response = await fetch(API_PATHS.LOGIN, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const response = await axiosInstance.post(API_PATHS.LOGIN, {
+        email,
+        password,
       });
-      const data = await response.json();
 
-      if (!response.ok || data.error || !data.accessToken) {
+      const data = response.data;
+
+      if (data.error || !data.accessToken) {
         setError(data.message || "Unable to log in. Please try again.");
         return;
       }
 
       localStorage.setItem("accessToken", data.accessToken);
       navigate("/dashboard");
-    } catch {
-      setError("Unable to reach the server. Please try again.");
+      
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Unable to reach the server. Please try again."
+      );
     }
   };
 

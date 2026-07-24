@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { API_PATHS } from "../../utils/apiPaths";
 import DeleteConfirm from "../../Components/Modals/DeleteConfirm";
+import axiosInstance from "../../utils/axiosInstance";
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -48,7 +49,7 @@ const Home = () => {
     });
   };
 
-  const request = async (path, options = {}) => {
+/*   const request = async (path, options = {}) => {
     const accessToken = localStorage.getItem("accessToken");
     const response = await fetch(path, {
       ...options,
@@ -63,12 +64,14 @@ const Home = () => {
       throw new Error(data.message || "Unable to complete the request.");
     }
     return data;
-  };
+  }; */
+
 
   //show notes on homescreen
   const getNotes = async () => {
     try {
-      const data = await request(API_PATHS.GET_ALL_NOTES);
+      const response = await axiosInstance.get(API_PATHS.GET_ALL_NOTES);
+      const data = response.data;
       setNotes(sortNotes(data.notes || []));
     } catch (error) {
       if (
@@ -136,7 +139,7 @@ const Home = () => {
   //note delete button
   const handleDeleteNote = async (noteId) => {
     try {
-      await request(API_PATHS.DELETE_NOTE(noteId), { method: "DELETE" });
+      await axiosInstance.delete(API_PATHS.DELETE_NOTE(noteId));
       setNotes((currentNotes) =>
         currentNotes.filter((note) => note._id !== noteId)
       );
@@ -148,10 +151,14 @@ const Home = () => {
   //note pin button
   const handlePinNote = async (note) => {
     try {
-      const data = await request(API_PATHS.UPDATE_PINNED_NOTE(note._id), {
-        method: "PUT",
-        body: JSON.stringify({ isPinned: !note.isPinned }),
-      });
+      const response = await axiosInstance.put(
+        API_PATHS.UPDATE_PINNED_NOTE(note._id),
+        {
+          isPinned: !note.isPinned,
+        }
+      );
+
+      const data = response.data;
       setNotes((currentNotes) =>
         sortNotes(
           currentNotes.map((currentNote) =>

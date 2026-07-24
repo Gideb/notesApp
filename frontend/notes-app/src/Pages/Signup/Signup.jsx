@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 
 import PasswordInput from "../../Components/Input/PasswordInput";
 import { useState } from "react";
@@ -34,22 +35,26 @@ const Signup = () => {
     setError(null);
 
     try {
-      const response = await fetch(API_PATHS.CREATE_ACCOUNT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, email, password }),
+      const response = await axiosInstance.post(API_PATHS.CREATE_ACCOUNT, {
+        fullName,
+        email,
+        password,
       });
-      const data = await response.json();
 
-      if (!response.ok || data.error || !data.accessToken) {
+      const data = response.data;
+
+      if (data.error || !data.accessToken) {
         setError(data.message || "Unable to create your account.");
         return;
       }
 
       localStorage.setItem("accessToken", data.accessToken);
       navigate("/dashboard");
-    } catch {
-      setError("Unable to reach the server. Please try again.");
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Unable to reach the server. Please try again."
+      );
     }
   };
 
