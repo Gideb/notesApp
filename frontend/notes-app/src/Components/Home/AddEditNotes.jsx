@@ -76,8 +76,6 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
       return;
     }
 
-    setError("Note not saved. Please try again.");
-
     if (type === "edit") {
       editNote();
     } else {
