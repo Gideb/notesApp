@@ -18,7 +18,12 @@ const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || "*" }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://gideb-notebook.vercel.app"],
+    credentials: true,
+  })
+);
 
 app.get("/", (req, res) => res.json({ data: "hello" }));
 app.post("/signup", signUp);
