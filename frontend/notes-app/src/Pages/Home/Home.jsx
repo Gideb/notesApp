@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import NoteCard from "../../Components/Cards/NoteCard";
 import { AiOutlinePushpin } from "react-icons/ai";
 import { GoTrash } from "react-icons/go";
 import { MdAdd, MdClose, MdOutlineCreate } from "react-icons/md";
 import AddEditNotes from "../../Components/Home/AddEditNotes";
 import Modal from "react-modal";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { API_PATHS } from "../../utils/apiPaths";
 import DeleteConfirm from "../../Components/Modals/DeleteConfirm";
 
@@ -28,6 +28,8 @@ const Home = () => {
   });
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const searchQuery = (searchParams.get("q") || "").trim().toLowerCase();
 
   const sortNotes = (notesList) => {
     return [...notesList].sort((firstNote, secondNote) => {
@@ -86,6 +88,18 @@ const Home = () => {
   useEffect(() => {
     void Promise.resolve().then(getNotes);
   }, []);
+
+  const filteredNotes = useMemo(() => {
+    if (!searchQuery) return notes;
+
+    return notes.filter((note) => {
+      const searchableText = [note.title, note.content, ...(note.tags || [])]
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(searchQuery);
+    });
+  }, [notes, searchQuery]);
 
   const onCloseAddNote = () => {
     setOpenAddEditModal({
@@ -163,13 +177,15 @@ const Home = () => {
 
         {isLoading ? (
           <p className="mt-8 text-sm text-slate-500">Loading notes...</p>
-        ) : notes.length === 0 ? (
+        ) : filteredNotes.length === 0 ? (
           <p className="mt-8 text-sm text-slate-500">
-            No notes yet. Create your first one.
+            {searchQuery
+              ? "No notes match your search."
+              : "No notes yet. Create your first one."}
           </p>
         ) : (
           <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3">
-            {notes.map((note) => (
+            {filteredNotes.map((note) => (
               <NoteCard
                 key={note._id}
                 title={note.title}
