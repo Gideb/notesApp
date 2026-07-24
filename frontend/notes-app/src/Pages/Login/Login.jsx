@@ -49,8 +49,8 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center px-2 py-4 sm:px-4">
-      <div className="w-full max-w-[26rem] rounded border border-white/80 bg-[#0B112C] px-5 py-8 text-white shadow-lg sm:max-w-[30rem] sm:px-8 sm:py-10 lg:px-12 lg:py-14">
-        <form onSubmit={handleLogin} className="mx-auto w-full max-w-[22rem]">
+      <div className="w-full max-w-104 rounded border border-white/80 bg-[#0B112C] px-5 py-8 text-white shadow-lg sm:max-w-120 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+        <form onSubmit={handleLogin} className="mx-auto w-full max-w-88">
           <h2 className="mb-8 text-center text-2xl sm:mb-10">Login</h2>
 
           <input
