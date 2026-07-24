@@ -112,6 +112,7 @@ const login = async (req, res, next) => {
       error: false,
       message: "Login successful.",
       email: user.email,
+      fullName: user.fullName,
       accessToken: createAccessToken(user._id),
     });
   } catch (error) {
