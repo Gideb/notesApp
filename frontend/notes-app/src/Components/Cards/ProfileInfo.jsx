@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getInitials } from "../../utils/helper";
+import { IoLogOutOutline } from "react-icons/io5";
+import { FaUser } from "react-icons/fa6";
 
 const ProfileInfo = ({ onLogout, userName = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,19 +66,21 @@ const ProfileInfo = ({ onLogout, userName = "" }) => {
       <div
         onMouseEnter={clearCloseTimer}
         onMouseLeave={scheduleClose}
-        className={`absolute right-0 top-full z-50 mt-2 w-48 rounded border-2 border-gray-200 bg-white p-3 shadow-lg transition-all duration-300 ease-out dark:border-gray-700 dark:bg-[#0f0d0e] ${
+        className={`absolute right-0 top-full z-50 mt-2 w-43 min-w-40  rounded border-2 border-gray-200 p-4 shadow-lg transition-all duration-300 ease-out dark:border-gray-700 bg-slate-900 ${
           isOpen
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-2 opacity-0"
         }`}
       >
-        <div className="text-sm font-medium text-slate-900 dark:text-white">
+        <div className="flex items-baseline gap-3 text-sm text-white">
+          <FaUser className="text-md" />
           {displayName}
         </div>
         <button
-          className="mt-2 cursor-pointer text-sm text-red-500 underline transition hover:text-red-700 dark:text-red-400 dark:hover:text-red-600"
+          className="flex items-center gap-2 font-medium mt-1 cursor-pointer text-sm  hover:underline transition hover:text-red-600 text-red-400"
           onClick={onLogout}
         >
+          <IoLogOutOutline className="text-lg" />
           Logout
         </button>
       </div>
