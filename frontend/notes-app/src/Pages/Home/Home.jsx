@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import NoteCard from "../../Components/Cards/NoteCard";
 import { AiOutlinePushpin } from "react-icons/ai";
 import { GoTrash } from "react-icons/go";
-import { MdAdd, MdClose, MdOutlineCreate } from "react-icons/md";
+import { MdAdd, MdClose, MdNotes, MdOutlineCreate } from "react-icons/md";
 import AddEditNotes from "../../Components/Home/AddEditNotes";
 import Modal from "react-modal";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -324,7 +324,7 @@ const Home = () => {
               </div>
             </div>
 
-            <div className="max-h-[65vh] overflow-y-auto bg-white py-5 px-2 dark:bg-[#121214]">
+            {/*   <div className="max-h-[65vh] overflow-y-auto bg-white py-5 px-2 dark:bg-[#121214]">
               <div className="rounded-xl border border-slate-200 bg-linear-to-br from-slate-50 to-slate-100 p-4 text-sm leading-7 whitespace-pre-wrap text-slate-700 shadow-sm dark:border-slate-800 dark:from-slate-900 dark:to-slate-950 dark:text-slate-300">
                 {openViewModal.data.content}
               </div>
@@ -335,6 +335,50 @@ const Home = () => {
                   {openViewModal.data.tags.join(", ")}
                 </div>
               )}
+            </div> */}
+            <div className="max-h-[65vh] overflow-y-auto bg-slate-50 px-6 py-6 dark:bg-[#0f0f11]">
+              <div className="mb-4 flex items-center gap-2">
+                <MdNotes className="text-indigo-500" size={18} />
+                <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                  Note
+                </span>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-[#1a1a1d]">
+                <p className="whitespace-pre-wrap text-[15px] leading-8 text-slate-700 dark:text-slate-300">
+                  {openViewModal.data.content}
+                </p>
+              </div>
+
+              {openViewModal.data.tags?.length > 0 && (
+                <div className="mt-6">
+                  <h4 className="mb-3 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                    Tags
+                  </h4>
+
+                  <div className="flex flex-wrap gap-2">
+                    {openViewModal.data.tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                <span>
+                  📝 {openViewModal.data.content.split(" ").length} words
+                </span>
+
+                <span>🏷️ {openViewModal.data.tags?.length || 0} tags</span>
+
+                {openViewModal.data.isPinned && (
+                  <span className="font-medium text-sky-600">📌 Pinned</span>
+                )}
+              </div>
             </div>
           </div>
         )}
