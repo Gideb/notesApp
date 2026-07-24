@@ -235,6 +235,7 @@ const Home = () => {
         }}
       >
         <AddEditNotes
+          key={`${openAddEditModal.type}-${openAddEditModal.data?._id || "new"}`}
           type={openAddEditModal.type}
           noteData={openAddEditModal.data}
           onClose={onCloseAddNote}

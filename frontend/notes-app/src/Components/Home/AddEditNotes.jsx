@@ -1,27 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import TagInput from "../Input/TagInput";
 import { API_PATHS } from "../../utils/apiPaths";
 import axiosInstance from "../../utils/axiosInstance";
 
 const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState([]);
+  const [title, setTitle] = useState(
+    type === "edit" && noteData ? noteData.title || "" : ""
+  );
+  const [content, setContent] = useState(
+    type === "edit" && noteData ? noteData.content || "" : ""
+  );
+  const [tags, setTags] = useState(
+    type === "edit" && noteData && Array.isArray(noteData.tags)
+      ? noteData.tags
+      : []
+  );
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (type === "edit" && noteData) {
-      setTitle(noteData.title || "");
-      setContent(noteData.content || "");
-      setTags(Array.isArray(noteData.tags) ? noteData.tags : []);
-    } else {
-      setTitle("");
-      setContent("");
-      setTags([]);
-    }
-    setError(null);
-  }, [type, noteData]);
 
   const addNewNote = async () => {
     try {
