@@ -84,7 +84,7 @@ const Login = () => {
             Not regsitered yet?{" "}
             <Link
               to="/signup"
-              className="font-medium text-primary dark:text-pink-400 underline "
+              className="font-medium text-[#ff277e] dark:text-pink-400 underline "
             >
               Create an account
             </Link>

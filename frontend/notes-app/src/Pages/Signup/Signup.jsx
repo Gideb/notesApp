@@ -100,7 +100,7 @@ const Signup = () => {
               Already regsitered?{" "}
               <Link
                 to="/login"
-                className="font-medium text-primary dark:text-pink-400 underline "
+                className="font-medium text-[#ff277e] dark:text-pink-400 underline "
               >
                 Login
               </Link>
