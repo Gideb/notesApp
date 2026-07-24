@@ -203,12 +203,12 @@ const Home = () => {
         )}
       </div>
       <button
-        className="w-17 h-17 flex items-center justify-center bg-linear-to-br from-pink-600 to-rose-500 rounded-full absolute bottom-10 right-10 shadow-[0_12px_30px_rgba(244,114,182,0.35)] hover:scale-105 hover:shadow-[0_16px_35px_rgba(244,114,182,0.45)] focus:outline-none cursor-pointer transition-all"
+        className="w-17 h-17 flex items-center justify-center bg-linear-to-br from-pink-600 to-rose-500 rounded-full absolute bottom-10 right-10 hover:scale-105 focus:outline-none cursor-pointer transition-all"
         onClick={() =>
           setOpenAddEditModal({ isShown: true, type: "add", data: null })
         }
       >
-        <MdAdd size={20} className="text-white dark:text-primary font-bold" />
+        <MdAdd size={20} className="text-white  font-bold" />
       </button>
 
       {/* add or edit note */}
