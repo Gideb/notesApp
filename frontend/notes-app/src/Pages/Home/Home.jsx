@@ -49,24 +49,6 @@ const Home = () => {
     });
   };
 
-/*   const request = async (path, options = {}) => {
-    const accessToken = localStorage.getItem("accessToken");
-    const response = await fetch(path, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        ...options.headers,
-      },
-    });
-    const data = await response.json();
-    if (!response.ok || data.error) {
-      throw new Error(data.message || "Unable to complete the request.");
-    }
-    return data;
-  }; */
-
-
   //show notes on homescreen
   const getNotes = async () => {
     try {

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdClose } from "react-icons/md";
 import TagInput from "../Input/TagInput";
 import { API_PATHS } from "../../utils/apiPaths";
+import axiosInstance from "../../utils/axiosInstance";
 
 const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
   const [title, setTitle] = useState("");
@@ -22,29 +23,16 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
     setError(null);
   }, [type, noteData]);
 
-  const request = async (path, options = {}) => {
-    const accessToken = localStorage.getItem("accessToken");
-    const response = await fetch(path, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        ...options.headers,
-      },
-    });
-    const data = await response.json();
-    if (!response.ok || data.error) {
-      throw new Error(data.message || "Unable to complete the request.");
-    }
-    return data;
-  };
-
   const addNewNote = async () => {
     try {
-      const data = await request(API_PATHS.ADD_NOTE, {
-        method: "POST",
-        body: JSON.stringify({ title, content, tags }),
+      const response = await axiosInstance.post(API_PATHS.ADD_NOTE, {
+        title,
+        content,
+        tags,
       });
+
+      const data = response.data;
+
       onSuccess?.(data.note);
       onClose();
     } catch (error) {
@@ -52,6 +40,7 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
     }
   };
 
+  //edit note
   const editNote = async () => {
     if (!noteData || !noteData._id) {
       setError("Unable to update this note.");
@@ -59,10 +48,16 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
     }
 
     try {
-      const data = await request(API_PATHS.EDIT_NOTE(noteData._id), {
-        method: "PUT",
-        body: JSON.stringify({ title, content, tags }),
-      });
+      const response = await axiosInstance.put(
+        API_PATHS.EDIT_NOTE(noteData._id),
+        {
+          title,
+          content,
+          tags,
+        }
+      );
+      const data = response.data;
+
       onSuccess?.(data.note);
       onClose();
     } catch (error) {
