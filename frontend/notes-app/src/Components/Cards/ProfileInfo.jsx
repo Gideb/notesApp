@@ -66,9 +66,9 @@ const ProfileInfo = ({ onLogout, userName = "" }) => {
       <div
         onMouseEnter={clearCloseTimer}
         onMouseLeave={scheduleClose}
-        className={`absolute right-0 top-full z-50 mt-2 w-43 min-w-40  rounded border-2 border-gray-200 p-4 shadow-lg transition-all duration-300 ease-out dark:border-gray-700 bg-slate-900 ${
+        className={`absolute right-0 top-full mt-2 z-50  w-43 rounded border border-gray-200 p-4 shadow-lg transition-all duration-500 ease-in-out dark:border-gray-700 bg-slate-900 ${
           isOpen
-            ? "translate-y-0 opacity-100"
+            ? "translate-y-2 opacity-100"
             : "pointer-events-none translate-y-2 opacity-0"
         }`}
       >
