@@ -26,14 +26,14 @@ app.use(
 );
 
 app.get("/", (req, res) => res.json({ data: "hello" }));
-app.post("/signup", signUp);
-app.post("/login", login);
-app.get("/get-user", authenticateToken, getUser);
-app.post("/add-note", authenticateToken, addNote);
-app.put("/edit-notes/:noteId", authenticateToken, editNote);
-app.get("/get-all-notes", authenticateToken, getAllNotes);
-app.delete("/delete-note/:noteId", authenticateToken, deleteNote);
-app.put("/update-pinned-note/:noteId", authenticateToken, updatePinnedNote);
+app.post("/api/signup", signUp);
+app.post("/api/login", login);
+app.get("/api/get-user", authenticateToken, getUser);
+app.post("/api/add-note", authenticateToken, addNote);
+app.put("/api/edit-notes/:noteId", authenticateToken, editNote);
+app.get("/api/get-all-notes", authenticateToken, getAllNotes);
+app.delete("/api/delete-note/:noteId", authenticateToken, deleteNote);
+app.put("/api/update-pinned-note/:noteId", authenticateToken, updatePinnedNote);
 
 app.use((error, req, res, next) => {
   if (error.name === "CastError") {
