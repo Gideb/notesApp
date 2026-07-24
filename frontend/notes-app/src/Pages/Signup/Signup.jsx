@@ -49,6 +49,9 @@ const Signup = () => {
       }
 
       localStorage.setItem("accessToken", data.accessToken);
+      if (data.user?.fullName) {
+        localStorage.setItem("userName", data.user.fullName);
+      }
       navigate("/dashboard");
     } catch (error) {
       setError(

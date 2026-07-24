@@ -42,8 +42,10 @@ const Login = () => {
       }
 
       localStorage.setItem("accessToken", data.accessToken);
+      if (data.fullName) {
+        localStorage.setItem("userName", data.fullName);
+      }
       navigate("/dashboard");
-      
     } catch (error) {
       setError(
         error.response?.data?.message ||

@@ -1,17 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ProfileInfo from "../Cards/ProfileInfo";
 import SearchBar from "../SearchBar/SearchBar";
 import { GiNotebook } from "react-icons/gi";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
 
 const Navbar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") ?? "");
+  const [userName, setUserName] = useState("");
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("userName");
+    if (storedUserName) {
+      setUserName(storedUserName);
+      return;
+    }
+
+    const loadUserProfile = async () => {
+      try {
+        const response = await axiosInstance.get(API_PATHS.GET_USER_INFO);
+        const nextName = response?.data?.user?.fullName;
+        if (nextName) {
+          setUserName(nextName);
+          localStorage.setItem("userName", nextName);
+        }
+      } catch (error) {
+        console.error("Unable to load user profile", error);
+      }
+    };
+
+    void loadUserProfile();
+  }, []);
+
   const onLogout = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("userName");
+    setUserName("");
     navigate("/login");
   };
 
@@ -55,7 +83,7 @@ const Navbar = () => {
         onClearSearch={onClearSearch}
       />
 
-      <ProfileInfo onLogout={onLogout} />
+      <ProfileInfo onLogout={onLogout} userName={userName} />
     </div>
   );
 };

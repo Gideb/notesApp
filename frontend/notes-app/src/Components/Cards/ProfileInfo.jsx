@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { getInitials } from "../../utils/helper";
 
-const ProfileInfo = ({ onLogout }) => {
+const ProfileInfo = ({ onLogout, userName = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const closeTimerRef = useRef(null);
+  const displayName = userName?.trim() || "User";
 
   const clearCloseTimer = () => {
     if (closeTimerRef.current) {
@@ -55,8 +56,9 @@ const ProfileInfo = ({ onLogout }) => {
         type="button"
         onClick={toggleMenu}
         className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary dark:border-dark bg-slate-100 text-sm font-medium text-slate-950 transition hover:scale-105 dark:bg-slate-800 dark:text-white"
+        aria-label={displayName}
       >
-        {getInitials("Papa Smith")}
+        {getInitials(displayName)}
       </button>
 
       <div
@@ -69,7 +71,7 @@ const ProfileInfo = ({ onLogout }) => {
         }`}
       >
         <div className="text-sm font-medium text-slate-900 dark:text-white">
-          Papa Smith
+          {displayName}
         </div>
         <button
           className="mt-2 cursor-pointer text-sm text-red-500 underline transition hover:text-red-700 dark:text-red-400 dark:hover:text-red-600"
