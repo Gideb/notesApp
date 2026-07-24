@@ -27,7 +27,7 @@ const SearchBar = ({ onChange, onClearSearch, value, handleSearch }) => {
 
   return (
     <>
-      <div className="hidden w-80 sm:flex items-center rounded-md bg-slate-100 px-4 dark:bg-dark/20">
+      <div className="hidden w-100 sm:flex items-center rounded-md bg-slate-100 px-4 dark:bg-dark/20">
         <input
           type="text"
           placeholder="Search Notes..."
