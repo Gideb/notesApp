@@ -92,7 +92,7 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
         <MdClose className="text-md text-slate-400 group-hover:text-white group-dark:hover:text-gray-300 " />
       </button>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 mt-3">
         <label className="input-label">TITLE</label>
 
         <input
