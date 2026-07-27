@@ -1,6 +1,6 @@
 import React from "react";
 import nonotes from "../../assets/images/none.png";
-import { GoPlus } from "react-icons/go";
+/* import { GoPlus } from "react-icons/go"; */
 
 const EmptyNotes = ({ onAddNote }) => {
   return (

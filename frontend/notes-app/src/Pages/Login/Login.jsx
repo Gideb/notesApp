@@ -6,6 +6,7 @@ import { validateEmail } from "../../utils/helper";
 import { API_PATHS } from "../../utils/apiPaths";
 import axiosInstance from "../../utils/axiosInstance";
 import LoginLoader from "../../Components/Loader/LoginLoader";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -41,17 +42,24 @@ const Login = () => {
       const data = response.data;
 
       if (data.error || !data.accessToken) {
-        setError(data.message || "Unable to log in. Please try again.");
+        toast.error(data?.message || "Unable to log in. Please try again.");
         return;
       }
 
       localStorage.setItem("accessToken", data.accessToken);
-      if (data.fullName) {
-        localStorage.setItem("userName", data.fullName);
+      if (data.user?.fullName) {
+        localStorage.setItem("userName", data.user.fullName);
       }
-      navigate("/dashboard");
+
+      toast.success("Logged in successfully!");
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 800);
+
+
     } catch (error) {
-      setError(
+      toast.error(
         error.response?.data?.message ||
           "Unable to reach the server. Please try again."
       );
@@ -92,13 +100,17 @@ const Login = () => {
           {loading ? (
             <LoginLoader />
           ) : (
-            <button type="submit" className="btn-primary mt-2">
-              Login
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary mt-2 flex items-center justify-center"
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
           )}
 
           <p className="text-sm text-center mt-8">
-            Not regsitered yet?{" "}
+            Not registered yet?{" "}
             <Link
               to="/signup"
               className="font-medium text-[#ff277e] dark:text-pink-400 underline "

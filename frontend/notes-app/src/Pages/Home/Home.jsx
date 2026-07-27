@@ -5,11 +5,12 @@ import { GoTrash } from "react-icons/go";
 import { MdAdd, MdClose, MdNotes, MdOutlineCreate } from "react-icons/md";
 import AddEditNotes from "../../Components/Home/AddEditNotes";
 import Modal from "react-modal";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { API_PATHS } from "../../utils/apiPaths";
 import DeleteConfirm from "../../Components/Modals/DeleteConfirm";
 import axiosInstance from "../../utils/axiosInstance";
 import EmptyNotes from "../../Components/Loader/EmptyNotes";
+import toast from "react-hot-toast";
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -29,7 +30,6 @@ const Home = () => {
     note: null,
   });
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") || "").trim().toLowerCase();
 
@@ -55,17 +55,18 @@ const Home = () => {
     try {
       const response = await axiosInstance.get(API_PATHS.GET_ALL_NOTES);
       const data = response.data;
+
       setNotes(sortNotes(data.notes || []));
     } catch (error) {
-      if (
-        error.message.toLowerCase().includes("token") ||
+      /* if (
+        error.response?.data?.message?.toLowerCase().includes("token") ||
         !localStorage.getItem("accessToken")
       ) {
         localStorage.removeItem("accessToken");
         navigate("/login");
         return;
-      }
-      setError(error.message || "Unable to load notes.");
+      } */
+      toast.error(error.response?.data?.message || "Unable to load notes.");
     } finally {
       setIsLoading(false);
     }
@@ -123,11 +124,16 @@ const Home = () => {
   const handleDeleteNote = async (noteId) => {
     try {
       await axiosInstance.delete(API_PATHS.DELETE_NOTE(noteId));
+
       setNotes((currentNotes) =>
         currentNotes.filter((note) => note._id !== noteId)
       );
+
+      toast.success("Note deleted successfully");
     } catch (error) {
-      setError(error.message || "Unable to delete the note.");
+      toast.error(
+        error.response?.data?.message || "Unable to delete the note."
+      );
     }
   };
 
@@ -149,6 +155,8 @@ const Home = () => {
           )
         )
       );
+      toast.success(data.note.isPinned ? "Note pinned 📌" : "Note unpinned");
+
       if (openViewModal.data?._id === note._id) {
         setOpenViewModal((currentModal) => ({
           ...currentModal,
@@ -156,7 +164,9 @@ const Home = () => {
         }));
       }
     } catch (error) {
-      setError(error.message || "Unable to update the note.");
+      toast.error(
+        error.response?.data?.message || "Unable to update the note."
+      );
     }
   };
 
@@ -232,7 +242,7 @@ const Home = () => {
         }
         style={{ overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" } }}
         contentLabel="Add/Edit Note"
-        className="bg-white dark:bg-[#0c0c0e] rounded-lg p-6 w-[95%] max-w-md max-h-[85vh] overflow-y-auto outline-none"
+        className="bg-white dark:bg-[#0c0c16] rounded-lg p-6 w-[95%] max-w-md max-h-[85vh] overflow-y-auto outline-none"
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.5)",

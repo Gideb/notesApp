@@ -3,6 +3,7 @@ import { MdClose } from "react-icons/md";
 import TagInput from "../Input/TagInput";
 import { API_PATHS } from "../../utils/apiPaths";
 import axiosInstance from "../../utils/axiosInstance";
+import toast from "react-hot-toast";
 
 const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
   const [title, setTitle] = useState("");
@@ -33,17 +34,19 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
 
       const data = response.data;
 
+      toast.success("Note created successfully");
+
       onSuccess?.(data.note);
       onClose();
     } catch (error) {
-      setError(error.message || "Unable to add the note.");
+      toast.error(error.response?.data?.message || "Unable to add the note.");
     }
   };
 
   //edit note
   const editNote = async () => {
     if (!noteData || !noteData._id) {
-      setError("Unable to update this note.");
+      toast.error("Unable to update this note.");
       return;
     }
 
@@ -56,12 +59,17 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
           tags,
         }
       );
+
       const data = response.data;
+
+      toast.success("Note updated successfully");
 
       onSuccess?.(data.note);
       onClose();
     } catch (error) {
-      setError(error.message || "Unable to update the note.");
+      toast.error(
+        error.response?.data?.message || "Unable to update the note."
+      );
     }
   };
 
@@ -125,7 +133,7 @@ const AddEditNotes = ({ noteData, type, onClose, onSuccess }) => {
         className="btn-primary px-4 py-2 font-medium mt-5 p-3 text-white rounded hover:bg-pink-800 focus:outline-none cursor-pointer"
         onClick={handleAddNote}
       >
-        Save Note
+        {type === "edit" ? "Update Note" : "Save Note"}
       </button>
     </div>
   );
