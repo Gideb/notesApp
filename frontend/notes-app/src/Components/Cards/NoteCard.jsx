@@ -18,7 +18,7 @@ const NoteCard = ({
 
   return (
     <div onClick={onTapped} className="h-full cursor-pointer">
-      <div className="flex h-full min-h-50 flex-col justify-between rounded border border-sky-400 bg-[#1C2541] p-4 shadow-md transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl dark:border-dark dark:bg-[#1E293B] dark:shadow-gray-600/20">
+      <div className="flex h-full min-h-50 flex-col justify-between rounded border bg-[#1C2541] p-4 shadow-md transition-all duration-300 ease-in-out hover:shadow-xl dark:border-dark dark:bg-[#1E293B] shadow-gray-600">
         <div>
           <div className="mb-3 flex items-start justify-between gap-2">
             <div className="min-w-0">

@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { validateEmail } from "../../utils/helper";
 import { API_PATHS } from "../../utils/apiPaths";
 import axiosInstance from "../../utils/axiosInstance";
+import LoginLoader from "../../Components/Loader/LoginLoader";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -27,6 +29,8 @@ const Login = () => {
     }
 
     setError(null);
+
+    setLoading(true);
 
     try {
       const response = await axiosInstance.post(API_PATHS.LOGIN, {
@@ -51,6 +55,8 @@ const Login = () => {
         error.response?.data?.message ||
           "Unable to reach the server. Please try again."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,9 +89,13 @@ const Login = () => {
             </p>
           )}
 
-          <button type="submit" className="btn-primary mt-2">
-            Login
-          </button>
+          {loading ? (
+            <LoginLoader />
+          ) : (
+            <button type="submit" className="btn-primary mt-2">
+              Login
+            </button>
+          )}
 
           <p className="text-sm text-center mt-8">
             Not regsitered yet?{" "}

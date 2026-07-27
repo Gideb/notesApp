@@ -11,6 +11,7 @@ import Signup from "../Pages/Signup/Signup";
 import Home from "../Pages/Home/Home";
 import AuthLayout from "../Components/Layout/AuthLayout";
 
+
 const AppRoutes = () => {
   return (
     <Router>
@@ -23,6 +24,7 @@ const AppRoutes = () => {
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+         
         </Route>
       </Routes>
     </Router>
