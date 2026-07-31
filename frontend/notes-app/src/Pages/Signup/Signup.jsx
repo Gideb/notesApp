@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
-
+import toast from "react-hot-toast";
 import PasswordInput from "../../Components/Input/PasswordInput";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async (e) => {
@@ -35,6 +36,7 @@ const Signup = () => {
     setError(null);
 
     try {
+      setIsLoading(true);
       const response = await axiosInstance.post(API_PATHS.CREATE_ACCOUNT, {
         fullName,
         email,
@@ -44,21 +46,33 @@ const Signup = () => {
       const data = response.data;
 
       if (data.error || !data.accessToken) {
-        setError(data.message || "Unable to create your account.");
+        toast.error(data.message || "Unable to create your account.");
         return;
       }
 
       localStorage.setItem("accessToken", data.accessToken);
+
       if (data.user?.fullName) {
         localStorage.setItem("userName", data.user.fullName);
       }
-      navigate("/dashboard");
+
+      toast.success("Account created successfully!");
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+
+      
     } catch (error) {
-      setError(
+      toast.error(
         error.response?.data?.message ||
           "Unable to reach the server. Please try again."
       );
     }
+    finally {
+      setIsLoading(false);
+    }
+
   };
 
   return (
@@ -66,7 +80,7 @@ const Signup = () => {
       <div className="flex items-center justify-center px-2 py-4 sm:px-4">
         <div className="w-full max-w-104 rounded border border-white/80 bg-[#0B112C] px-5 py-8 text-white shadow-lg sm:max-w-120 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
           <form onSubmit={handleSignup} className="mx-auto w-full max-w-88">
-            <h2 className="mb-8 text-center text-2xl sm:mb-10">SignUp</h2>
+            <h2 className="mb-8 text-center text-2xl sm:mb-10">Sign Up</h2>
 
             <input
               type="text"
@@ -100,12 +114,16 @@ const Signup = () => {
               </p>
             )}
 
-            <button type="submit" className="btn-primary mt-2">
-              SignUp
+            <button
+              type="submit"
+              className="btn-primary mt-2"
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating Account..." : "Sign Up"}
             </button>
 
             <p className="text-sm text-center mt-8">
-              Already regsitered?{" "}
+              Already registered?{" "}
               <Link
                 to="/login"
                 className="font-medium text-[#ff277e] dark:text-pink-400 underline "

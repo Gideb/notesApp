@@ -5,10 +5,12 @@ import { GoTrash } from "react-icons/go";
 import { MdAdd, MdClose, MdNotes, MdOutlineCreate } from "react-icons/md";
 import AddEditNotes from "../../Components/Home/AddEditNotes";
 import Modal from "react-modal";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { API_PATHS } from "../../utils/apiPaths";
 import DeleteConfirm from "../../Components/Modals/DeleteConfirm";
 import axiosInstance from "../../utils/axiosInstance";
+import EmptyNotes from "../../Components/Loader/EmptyNotes";
+import toast from "react-hot-toast";
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -28,7 +30,6 @@ const Home = () => {
     note: null,
   });
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const searchQuery = (searchParams.get("q") || "").trim().toLowerCase();
 
@@ -54,17 +55,18 @@ const Home = () => {
     try {
       const response = await axiosInstance.get(API_PATHS.GET_ALL_NOTES);
       const data = response.data;
+
       setNotes(sortNotes(data.notes || []));
     } catch (error) {
-      if (
-        error.message.toLowerCase().includes("token") ||
+      /* if (
+        error.response?.data?.message?.toLowerCase().includes("token") ||
         !localStorage.getItem("accessToken")
       ) {
         localStorage.removeItem("accessToken");
         navigate("/login");
         return;
-      }
-      setError(error.message || "Unable to load notes.");
+      } */
+      toast.error(error.response?.data?.message || "Unable to load notes.");
     } finally {
       setIsLoading(false);
     }
@@ -122,11 +124,16 @@ const Home = () => {
   const handleDeleteNote = async (noteId) => {
     try {
       await axiosInstance.delete(API_PATHS.DELETE_NOTE(noteId));
+
       setNotes((currentNotes) =>
         currentNotes.filter((note) => note._id !== noteId)
       );
+
+      toast.success("Note deleted successfully");
     } catch (error) {
-      setError(error.message || "Unable to delete the note.");
+      toast.error(
+        error.response?.data?.message || "Unable to delete the note."
+      );
     }
   };
 
@@ -148,6 +155,8 @@ const Home = () => {
           )
         )
       );
+      toast.success(data.note.isPinned ? "Note pinned 📌" : "Note unpinned");
+
       if (openViewModal.data?._id === note._id) {
         setOpenViewModal((currentModal) => ({
           ...currentModal,
@@ -155,7 +164,9 @@ const Home = () => {
         }));
       }
     } catch (error) {
-      setError(error.message || "Unable to update the note.");
+      toast.error(
+        error.response?.data?.message || "Unable to update the note."
+      );
     }
   };
 
@@ -167,11 +178,17 @@ const Home = () => {
         {isLoading ? (
           <p className="mt-8 text-sm text-slate-500">Loading notes...</p>
         ) : filteredNotes.length === 0 ? (
-          <p className="mt-8 text-sm text-slate-500">
-            {searchQuery
-              ? "No notes match your search."
-              : "No notes yet. Create your first one."}
-          </p>
+          searchQuery ? (
+            <p className="mt-8 text-sm text-slate-500">
+              No notes match your search.
+            </p>
+          ) : (
+            <EmptyNotes
+              onAddNote={() =>
+                setOpenAddEditModal({ isShown: true, type: "add", data: null })
+              }
+            />
+          )
         ) : (
           <div className="grid grid-cols-1 gap-4 mt-8 sm:grid-cols-2 lg:grid-cols-3">
             {filteredNotes.map((note) => (
@@ -225,13 +242,14 @@ const Home = () => {
         }
         style={{ overlay: { backgroundColor: "rgba(0, 0, 0, 0.5)" } }}
         contentLabel="Add/Edit Note"
-        className=" bg-white dark:bg-[#0c0c0e] rounded-lg p-6 w-full max-w-md max-h-[85vh] overflow-y-auto outline-none"
+        className="bg-white dark:bg-[#0c0c16] rounded-lg p-6 w-[95%] max-w-md max-h-[85vh] overflow-y-auto outline-none"
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.5)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            padding: "16px",
           },
         }}
       >
@@ -267,7 +285,7 @@ const Home = () => {
             alignItems: "center",
           },
         }}
-        className="w-full mx-4 sm:mx-0 max-w-2xl rounded-2xl bg-white p-0 outline-none shadow-[0_20px_60px_rgba(0,0,0,0.25)] dark:bg-[#121214]"
+        className="w-full mx-4 sm:mx-0 max-w-2xl rounded-xl bg-white p-0 outline-none shadow-[0_20px_60px_rgba(0,0,0,0.25)] dark:bg-[#121214]"
       >
         {openViewModal.data && (
           <div className="overflow-hidden rounded-2xl">
@@ -359,7 +377,7 @@ const Home = () => {
                     {openViewModal.data.tags.map((tag, index) => (
                       <span
                         key={index}
-                        className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 dark:border-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300"
+                        className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700 dark:border-sky-800 dark:bg-sky-950/40 dark:text-sky-300"
                       >
                         #{tag}
                       </span>
@@ -394,9 +412,10 @@ const Home = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            padding: "16px",
           },
         }}
-        className="bg-white dark:bg-[#121214] rounded-lg p-6 w-full max-w-sm outline-none"
+        className="bg-white dark:bg-[#121214] rounded-lg p-4 w-full max-w-sm outline-none"
       >
         <DeleteConfirm
           note={deleteModal.note}

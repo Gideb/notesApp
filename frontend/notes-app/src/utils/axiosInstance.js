@@ -12,7 +12,6 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-
     const accessToken = localStorage.getItem("accessToken");
 
     if (accessToken) {
@@ -22,9 +21,22 @@ axiosInstance.interceptors.request.use(
 
 
     return config;
-    
   },
+  (error) => Promise.reject(error)
+);
+
+// Handle expired token
+axiosInstance.interceptors.response.use(
+  (response) => response,
+
   (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userName");
+
+      window.location.href = "/login";
+    }
+
     return Promise.reject(error);
     
   }
